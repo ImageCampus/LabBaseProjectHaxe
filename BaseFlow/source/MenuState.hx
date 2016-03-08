@@ -40,7 +40,17 @@ class MenuState extends FlxState
 		creditsButton.color = 0xff729954;
 		creditsButton.label.color = 0xffd8eba2;
 		
+		audioButton = new FlxButton(0, 0, null, onAudio);
+		if (FlxG.sound.volume > 0)
+			audioButton.loadGraphic("assets/images/musicOn.png");
+		else
+			audioButton.loadGraphic("assets/images/musicOff.png");
+			
+		audioButton.setPosition(FlxG.width - audioButton.width - FlxG.height * 0.03, FlxG.height * 0.03);
+		trace(audioButton.getPosition());
+		
 		add(background);
+		add(audioButton);
 		add(playButton);
 		add(webButton);
 		add(creditsButton);
@@ -74,5 +84,19 @@ class MenuState extends FlxState
 	private function onFadeToCreditsState():Void
 	{
 		FlxG.switchState(new CreditState());
+	}
+	
+	private function onAudio():Void
+	{
+		if (FlxG.sound.volume > 0)
+		{
+			audioButton.loadGraphic("assets/images/musicOff.png");
+			FlxG.sound.volume = 0;
+		}
+		else
+		{			
+			audioButton.loadGraphic("assets/images/musicOn.png");
+			FlxG.sound.volume = 1;
+		}
 	}
 }

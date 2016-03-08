@@ -5,13 +5,17 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
+import flixel.ui.FlxButton;
+import flixel.util.FlxColor;
 
 class CreditState extends FlxState
 {	
 	inline static private var TEXT_SPD:Float = -70;
 	inline static private var NORMAL_TEXT_SIZE:Int = 16;
 	
-	private var everythingGroup:FlxTypedGroup<FlxSprite>;
+	private var scrollablesGroup:FlxTypedGroup<FlxSprite>;
+	
+	private var backButton:FlxButton;
 	
 	private var imageCampusLogo:FlxSprite;
 	private var devLogo:FlxSprite;
@@ -38,7 +42,11 @@ class CreditState extends FlxState
 	{
 		super.create();
 		
-		everythingGroup = new FlxTypedGroup<FlxSprite>();
+		scrollablesGroup = new FlxTypedGroup<FlxSprite>();
+		
+		backButton = new FlxButton(0, 0, null, onBack);
+		backButton.loadGraphic("assets/images/backArrow.png");
+		backButton.setPosition(FlxG.width * 0.03, FlxG.height - backButton.height - FlxG.width * 0.03);
 		
 		imageCampusLogo = new FlxSprite();
 		devLogo = new FlxSprite();
@@ -79,6 +87,7 @@ class CreditState extends FlxState
 		
 		imageCampusLogo.loadGraphic("assets/images/icLogo.png");
 		devLogo.loadGraphic("assets/images/developerLogo.png");
+		gameLogo.loadGraphic("assets/images/gameLogo.png");
 		
 		adjustScale(imageCampusLogo);
 		adjustScale(devLogo);
@@ -98,33 +107,35 @@ class CreditState extends FlxState
 		adjustScale(professor2Name);
 		adjustScale(professor3Role);
 		adjustScale(professor3Name);
+		adjustScale(gameLogo);
 		
 		resetPositions();
 		
 		imageCampusLogo.velocity.y = TEXT_SPD;
-		devLogo.velocity.y = TEXT_SPD;	
+		devLogo.velocity.y = TEXT_SPD;
 		
-		everythingGroup.add(imageCampusLogo);
-		everythingGroup.add(devLogo);
-		everythingGroup.add(aboutTitle);
-		everythingGroup.add(aboutText);
-		everythingGroup.add(studentsTitle);
-		everythingGroup.add(student1Role);
-		everythingGroup.add(student1Name);
-		everythingGroup.add(student2Role);
-		everythingGroup.add(student2Name);
-		everythingGroup.add(student3Role);
-		everythingGroup.add(student3Name);
-		everythingGroup.add(professorsTitle);
-		everythingGroup.add(professor1Role);
-		everythingGroup.add(professor1Name);
-		everythingGroup.add(professor2Role);
-		everythingGroup.add(professor2Name);
-		everythingGroup.add(professor3Role);
-		everythingGroup.add(professor3Name);
-		everythingGroup.add(gameLogo);
+		scrollablesGroup.add(imageCampusLogo);
+		scrollablesGroup.add(devLogo);
+		scrollablesGroup.add(aboutTitle);
+		scrollablesGroup.add(aboutText);
+		scrollablesGroup.add(studentsTitle);
+		scrollablesGroup.add(student1Role);
+		scrollablesGroup.add(student1Name);
+		scrollablesGroup.add(student2Role);
+		scrollablesGroup.add(student2Name);
+		scrollablesGroup.add(student3Role);
+		scrollablesGroup.add(student3Name);
+		scrollablesGroup.add(professorsTitle);
+		scrollablesGroup.add(professor1Role);
+		scrollablesGroup.add(professor1Name);
+		scrollablesGroup.add(professor2Role);
+		scrollablesGroup.add(professor2Name);
+		scrollablesGroup.add(professor3Role);
+		scrollablesGroup.add(professor3Name);
+		scrollablesGroup.add(gameLogo);
 		
-		add(everythingGroup);
+		add(scrollablesGroup);
+		add(backButton);
 	}
 
 	override public function update(elapsed:Float):Void
@@ -133,10 +144,8 @@ class CreditState extends FlxState
 		
 		moveTexts();
 		
-		/*
 		if (needsLoop())
 			resetPositions();
-		*/
 	}
 	
 	private function adjustScale(s:FlxSprite):Void
@@ -167,6 +176,7 @@ class CreditState extends FlxState
 		professor2Name.y += TEXT_SPD * FlxG.elapsed;
 		professor3Role.y += TEXT_SPD * FlxG.elapsed;
 		professor3Name.y += TEXT_SPD * FlxG.elapsed;
+		gameLogo.y += TEXT_SPD * FlxG.elapsed;
 	}
 	
 	private function resetPositions():Void
@@ -194,9 +204,19 @@ class CreditState extends FlxState
 	
 	private function needsLoop():Bool
 	{
-		for (i in 0...everythingGroup.members.length)
-			if (everythingGroup.members[i].y + everythingGroup.members[i].height >= 0)
+		for (i in 0...scrollablesGroup.members.length)
+			if (scrollablesGroup.members[i].y + scrollablesGroup.members[i].height >= 0)
 				return false;
 		return true;
+	}
+	
+	private function onBack():Void
+	{
+		FlxG.camera.fade(FlxColor.BLACK, 0.67, false, onFadeToMenuState);
+	}
+	
+	private function onFadeToMenuState():Void
+	{
+		FlxG.switchState(new MenuState());
 	}
 }
